@@ -21,7 +21,7 @@ object MyModule {
     @annotation.tailrec
     def go(n: Int, acc: Int): Int =
       if (n <= 0) acc
-      else go(n-1, n*acc)
+      else go(n - 1, n * acc)
 
     go(n, 1)
   }
@@ -30,7 +30,9 @@ object MyModule {
   def factorial2(n: Int): Int = {
     var acc = 1
     var i = n
-    while (i > 0) { acc *= i; i -= 1 }
+    while (i > 0) {
+      acc *= i; i -= 1
+    }
     acc
   }
 
@@ -38,11 +40,11 @@ object MyModule {
 
   def fib(n: Int): Int = {
     def loop(a: Int, b: Int, count: Int): Int = {
-      if(count == n)b
-      else loop(b, a+ b, count + 1)
+      if (count == n) b
+      else loop(b, a + b, count + 1)
     }
-    if(n == 0) n
-    else loop(0,1,1)
+    if (n == 0) n
+    else loop(0, 1, 1)
   }
 
   // This definition and `formatAbs` are very similar..
@@ -86,6 +88,7 @@ object TestFib {
 // convenient to have syntax for constructing a function
 // *without* having to give it a name
 object AnonymousFunctions {
+
   import MyModule._
 
   // Some examples of anonymous functions:
@@ -96,7 +99,9 @@ object AnonymousFunctions {
     println(formatResult("increment2", 7, (x) => x + 1))
     println(formatResult("increment3", 7, x => x + 1))
     println(formatResult("increment4", 7, _ + 1))
-    println(formatResult("increment5", 7, x => { val r = x + 1; r }))
+    println(formatResult("increment5", 7, x => {
+      val r = x + 1; r
+    }))
   }
 }
 
@@ -114,9 +119,9 @@ object MonomorphicBinarySearch {
       else {
         val mid2 = (low + high) / 2
         val d = ds(mid2) // We index into an array using the same
-                         // syntax as function application
+        // syntax as function application
         if (d == key) mid2
-        else if (d > key) go(low, mid2, mid2-1)
+        else if (d > key) go(low, mid2, mid2 - 1)
         else go(mid2 + 1, mid2, high)
       }
     }
@@ -129,7 +134,7 @@ object PolymorphicFunctions {
 
   // Here's a polymorphic version of `binarySearch`, parameterized on
   // a function for testing whether an `A` is greater than another `A`.
-  def binarySearch[A](as: Array[A], key: A, gt: (A,A) => Boolean): Int = {
+  def binarySearch[A](as: Array[A], key: A, gt: (A, A) => Boolean): Int = {
     @annotation.tailrec
     def go(low: Int, mid: Int, high: Int): Int = {
       if (low > high) -mid - 1
@@ -137,8 +142,8 @@ object PolymorphicFunctions {
         val mid2 = (low + high) / 2
         val a = as(mid2)
         val greater = gt(a, key)
-        if (!greater && !gt(key,a)) mid2
-        else if (greater) go(low, mid2, mid2-1)
+        if (!greater && !gt(key, a)) mid2
+        else if (greater) go(low, mid2, mid2 - 1)
         else go(mid2 + 1, mid2, high)
       }
     }
@@ -147,39 +152,58 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A,A) => Boolean): Boolean = ???
+  def isSorted[A](as: Array[A], gt: (A, A) => Boolean): Boolean = {
+    @annotation.tailrec
+    def loop(idx: Int, prevSorted: Boolean): Boolean = {
+      if (prevSorted == false) prevSorted
+      else {
+        if (idx > as.length - 2) prevSorted
+        else loop(idx + 1, gt(as(idx), as(idx + 1)))
+      }
+    }
+    loop(0, true)
+  }
+
+  def main(args: Array[String]): Unit = {
+    assert(isSorted(Array(1),(a: Int,b: Int) => a < b) == true)
+    assert(isSorted(Array(1, 2),(a: Int,b: Int) => a < b) == true)
+    assert(isSorted(Array(1, 2),(a: Int,b: Int) => a > b) == false)
+    assert(isSorted(Array(1,2,3,4,3),(a: Int,b: Int) => a < b) == false)
+    assert(isSorted(Array(1,5,11,99),(a: Int,b: Int) => a < b) == true)
+    assert(isSorted(Array("a","b","cc","d"),(a: String,b: String) => a < b) == true)
+  }
 
   // Polymorphic functions are often so constrained by their type
-  // that they only have one implementation! Here's an example:
+    // that they only have one implementation! Here's an example:
 
-  def partial1[A,B,C](a: A, f: (A,B) => C): B => C =
-    (b: B) => f(a, b)
+    def partial1[A, B, C](a: A, f: (A, B) => C): B => C =
+      (b: B) => f(a, b)
 
-  // Exercise 3: Implement `curry`.
+    // Exercise 3: Implement `curry`.
 
-  // Note that `=>` associates to the right, so we could
-  // write the return type as `A => B => C`
-  def curry[A,B,C](f: (A, B) => C): A => (B => C) =
-    ???
+    // Note that `=>` associates to the right, so we could
+    // write the return type as `A => B => C`
+    def curry[A, B, C](f: (A, B) => C): A => (B => C) =
+      ???
 
-  // NB: The `Function2` trait has a `curried` method already
+    // NB: The `Function2` trait has a `curried` method already
 
-  // Exercise 4: Implement `uncurry`
-  def uncurry[A,B,C](f: A => B => C): (A, B) => C =
-    ???
+    // Exercise 4: Implement `uncurry`
+    def uncurry[A, B, C](f: A => B => C): (A, B) => C =
+      ???
 
-  /*
-  NB: There is a method on the `Function` object in the standard library,
-  `Function.uncurried` that you can use for uncurrying.
+    /*
+    NB: There is a method on the `Function` object in the standard library,
+    `Function.uncurried` that you can use for uncurrying.
 
-  Note that we can go back and forth between the two forms. We can curry
-  and uncurry and the two forms are in some sense "the same". In FP jargon,
-  we say that they are _isomorphic_ ("iso" = same; "morphe" = shape, form),
-  a term we inherit from category theory.
-  */
+    Note that we can go back and forth between the two forms. We can curry
+    and uncurry and the two forms are in some sense "the same". In FP jargon,
+    we say that they are _isomorphic_ ("iso" = same; "morphe" = shape, form),
+    a term we inherit from category theory.
+    */
 
-  // Exercise 5: Implement `compose`
+    // Exercise 5: Implement `compose`
 
-  def compose[A,B,C](f: B => C, g: A => B): A => C =
-    ???
-}
+    def compose[A, B, C](f: B => C, g: A => B): A => C =
+      ???
+  }
