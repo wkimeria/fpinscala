@@ -59,7 +59,14 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil => Nil
   }
 
-  def setHead[A](l: List[A], h: A): List[A] = sys.error("todo")
+  /*
+  Exercise 3.3
+  Using the same idea, implement the function setHead for replacing the first element of a List with a different value.
+   */
+  def setHead[A](l: List[A], h: A): List[A] =  l match {
+    case Cons(_,x) => Cons(h, x)
+    case Nil => Nil
+  }
 
   def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
 
@@ -82,5 +89,9 @@ object Test{
     assert(tail(List(1,2,3,4,5)) == List(2,3,4,5))
     assert(tail(List(1)) == Nil)
     assert(tail(Nil) == Nil)
+    
+    //Test Head
+    assert(setHead(List(1,2,3,4,5), 99) == List(99, 2,3,4,5))
+
   }
 }
