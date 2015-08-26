@@ -50,7 +50,9 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  /* Exercise 3.2
+  /*
+  Exercise 3.2
+
   Implement the function tail for removing the first element of a List. Note that the function takes constant time.
   What are different choices you could make in your implementation if the List is Nil?
    */
@@ -61,6 +63,7 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   /*
   Exercise 3.3
+
   Using the same idea, implement the function setHead for replacing the first element of a List with a different value.
    */
   def setHead[A](l: List[A], h: A): List[A] =  l match {
@@ -68,8 +71,22 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Nil => Nil
   }
 
-  def drop[A](l: List[A], n: Int): List[A] = sys.error("todo")
+  /*
+  Exercise 3.4
 
+  Generalize tail to the function drop, which removes the first n elements from a list. Note that this function takes
+  time proportional only to the number of elements being dropped—we don’t need to make a copy of the entire List.
+   */
+  @annotation.tailrec
+  def drop[A](l: List[A], n: Int): List[A] =
+  if (n == 0) l
+  else {
+    l match {
+      case Nil => Nil
+      case Cons(_, t) => drop(t, n - 1)
+    }
+  }
+  
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
 
   def init[A](l: List[A]): List[A] = sys.error("todo")
@@ -89,9 +106,14 @@ object Test{
     assert(tail(List(1,2,3,4,5)) == List(2,3,4,5))
     assert(tail(List(1)) == Nil)
     assert(tail(Nil) == Nil)
-    
+
     //Test Head
     assert(setHead(List(1,2,3,4,5), 99) == List(99, 2,3,4,5))
+
+    //Test drop
+    assert(drop(List(1,2,3,4,5),1) == List(2,3,4,5))
+    assert(drop(List(1,2,3,4,5),2) == List(3,4,5))
+    assert(drop(List(1,2,3,4,5),3) == List(4,5))
 
   }
 }
