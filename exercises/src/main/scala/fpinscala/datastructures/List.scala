@@ -50,7 +50,14 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
-  def tail[A](l: List[A]): List[A] = sys.error("todo")
+  /* Exercise 3.2
+  Implement the function tail for removing the first element of a List. Note that the function takes constant time.
+  What are different choices you could make in your implementation if the List is Nil?
+   */
+  def tail[A](l: List[A]): List[A] = l match {
+    case Cons(_,x) => x
+    case Nil => Nil
+  }
 
   def setHead[A](l: List[A], h: A): List[A] = sys.error("todo")
 
@@ -65,4 +72,15 @@ object List { // `List` companion object. Contains functions for creating and wo
   def foldLeft[A,B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
 
   def map[A,B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+
+}
+
+object Test{
+  import List._
+  def main(args: Array[String]): Unit = {
+    //Test tail
+    assert(tail(List(1,2,3,4,5)) == List(2,3,4,5))
+    assert(tail(List(1)) == Nil)
+    assert(tail(Nil) == Nil)
+  }
 }
