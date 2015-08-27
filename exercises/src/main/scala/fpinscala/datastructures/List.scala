@@ -86,8 +86,20 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Cons(_, t) => drop(t, n - 1)
     }
   }
-  
-  def dropWhile[A](l: List[A], f: A => Boolean): List[A] = sys.error("todo")
+
+  /*
+  Exercise 3.5
+  Implement dropWhile, which removes elements from the List prefix as long as they match a predicate.
+   */
+  def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
+    l match {
+      case Nil => Nil
+      case Cons(h, t) => {
+        if(f(h) == true) dropWhile(t,f)
+        else Cons(h,dropWhile(t,f))
+      }
+    }
+
 
   def init[A](l: List[A]): List[A] = sys.error("todo")
 
@@ -99,7 +111,7 @@ object List { // `List` companion object. Contains functions for creating and wo
 
 }
 
-object Test{
+object TestList{
   import List._
   def main(args: Array[String]): Unit = {
     //Test tail
@@ -114,6 +126,10 @@ object Test{
     assert(drop(List(1,2,3,4,5),1) == List(2,3,4,5))
     assert(drop(List(1,2,3,4,5),2) == List(3,4,5))
     assert(drop(List(1,2,3,4,5),3) == List(4,5))
+
+    //Test dropWhile
+    assert(dropWhile(List(1,2,3,4,5,6),((x: Int)=> x % 2 == 0)) == List(1,3,5))
+
 
   }
 }
