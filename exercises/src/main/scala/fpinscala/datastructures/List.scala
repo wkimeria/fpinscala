@@ -123,7 +123,13 @@ object List {
     loop(l)
   }
 
-  def length[A](l: List[A]): Int = sys.error("todo")
+  /*
+  Exercise 3.9
+  Compute the length of a list using foldRight.
+   */
+  def length[A](l: List[A]): Int = {
+    foldRight(l, 0)((x, b) => b + 1)
+  }
 
   def foldLeft[A, B](l: List[A], z: B)(f: (B, A) => B): B = sys.error("todo")
 
@@ -152,9 +158,14 @@ object TestList {
     //Test dropWhile
     assert(dropWhile(List(1, 2, 3, 4, 5, 6), ((x: Int) => x % 2 == 0)) == List(1, 3, 5))
 
-    //Test
+    //Test init
     assert(init(List(1)) == Nil)
     assert(init(List(1, 2, 3, 4, 5)) == List(1, 2, 3, 4))
+
+    //Test length using foldRight
+    assert(length(Nil) == 0)
+    assert(length(List(1)) == 1)
+    assert(length(List(1, 2, 3, 4, 66)) == 5)
 
 
   }
