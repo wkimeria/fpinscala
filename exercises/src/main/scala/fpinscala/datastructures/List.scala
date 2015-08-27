@@ -100,8 +100,22 @@ object List { // `List` companion object. Contains functions for creating and wo
       }
     }
 
-
-  def init[A](l: List[A]): List[A] = sys.error("todo")
+  /*
+  Exercise 3.6
+  Not everything works out so nicely. Implement a function, init, that returns a List consisting of all but
+  the last element of a List. So, given List(1,2,3,4), init will return List(1,2,3).
+  Why can’t this function be implemented in constant time like tail?
+   */
+  def init[A](l: List[A]): List[A] = {
+    def loop(a: List[A]): List[A] = {
+      a match {
+        case Cons(h,Nil) => Nil
+        case Cons(h,t) => Cons(h, loop(t))
+        case Nil => Nil
+      }
+    }
+    loop(l)
+  }
 
   def length[A](l: List[A]): Int = sys.error("todo")
 
@@ -129,6 +143,10 @@ object TestList{
 
     //Test dropWhile
     assert(dropWhile(List(1,2,3,4,5,6),((x: Int)=> x % 2 == 0)) == List(1,3,5))
+
+    //Test
+    assert(init(List(1)) == Nil)
+    assert(init(List(1,2,3,4,5)) == List(1, 2,3,4))
 
 
   }
