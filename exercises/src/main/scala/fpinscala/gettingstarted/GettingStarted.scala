@@ -39,6 +39,7 @@ object MyModule {
   // Exercise 1: Write a function to compute the nth fibonacci number
 
   def fib(n: Int): Int = {
+    @annotation.tailrec
     def loop(a: Int, b: Int, count: Int): Int = {
       if (count == n) b
       else loop(b, a + b, count + 1)
