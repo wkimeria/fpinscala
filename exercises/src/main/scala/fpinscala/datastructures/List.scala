@@ -146,7 +146,17 @@ object List {
     }
   }
 
-  def lengthLeft[A,B](l: List[A]): Int = {
+  /*
+  Exercise 3:11
+  Write sum, product, and a function to compute the length of a list using foldLeft.
+   */
+  def sumLeft(ns: List[Int]) =
+    foldLeft(ns, 0)((y, x) => x + y)
+
+  def productLeft(ns: List[Double]) =
+    foldLeft(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
+
+  def lengthLeft[A, B](l: List[A]): Int = {
     foldLeft(l, 0)((b, x) => b + 1)
   }
 
@@ -184,7 +194,13 @@ object TestList {
     assert(length(List(1)) == 1)
     assert(length(List(1, 2, 3, 4, 66)) == 5)
 
-    //Test length using FoldLeft
+    //Test using sumLeft
+    assert(sumLeft(List(1, 2, 3, 4, 5)) == 15)
+
+    //Test using productLeft
+    assert(productLeft(List(1, 2, 3, 4)) == 24)
+
+    //Test length using foldLeft
     assert(lengthLeft(Nil) == 0)
     assert(lengthLeft(List(1)) == 1)
     assert(lengthLeft(List(1, 2, 3, 4, 66)) == 5)
