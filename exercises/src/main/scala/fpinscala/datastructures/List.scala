@@ -131,6 +131,10 @@ object List {
     foldRight(l, 0)((x, b) => b + 1)
   }
 
+  def foldRightDemo[A](l: List[A]): Int = {
+    foldRight(l, 0)((x, b) => {println("x = " + x + " b = " + b); b + 1})
+  }
+
   /*
   Exercise 3:10
   Our implementation of foldRight is not tail-recursive and will result in a StackOverflowError for
@@ -158,6 +162,10 @@ object List {
 
   def lengthLeft[A, B](l: List[A]): Int = {
     foldLeft(l, 0)((b, x) => b + 1)
+  }
+
+  def foldLeftDemo[A, B](l: List[A]): Int = {
+    foldLeft(l, 0)((b, x) =>  {println("b = " + b + " x = " + x); b + 1})
   }
 
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
@@ -204,6 +212,14 @@ object TestList {
     assert(lengthLeft(Nil) == 0)
     assert(lengthLeft(List(1)) == 1)
     assert(lengthLeft(List(1, 2, 3, 4, 66)) == 5)
+
+    //Illustrating the differences between foldRight and foldLeft
+    val lst = List(1, 2, 3, 4)
+    println("foldRightDemo ----------------------- " + lst)
+    foldRightDemo(lst)
+    println("foldLeftDemo ----------------------- " + lst)
+    foldLeftDemo(lst)
+
 
   }
 }
