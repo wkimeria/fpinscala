@@ -132,7 +132,10 @@ object List {
   }
 
   def foldRightDemo[A](l: List[A]): Int = {
-    foldRight(l, 0)((x, b) => {println("x = " + x + " b = " + b); b + 1})
+    foldRight(l, 0)((x, b) => {
+      println("x = " + x + " b = " + b);
+      b + 1
+    })
   }
 
   /*
@@ -165,8 +168,40 @@ object List {
   }
 
   def foldLeftDemo[A, B](l: List[A]): Int = {
-    foldLeft(l, 0)((b, x) =>  {println("b = " + b + " x = " + x); b + 1})
+    foldLeft(l, 0)((b, x) => {
+      println("b = " + b + " x = " + x);
+      b + 1
+    })
   }
+
+  /*
+  Exercise 3:12
+  Write a function that returns the reverse of a list (given List(1,2,3) it returns List(3,2,1)).
+  See if you can write it using a fold.
+  */
+  def reverse[A](l: List[A]): List[A] = {
+    foldLeft(l, List[A]())((acc, h) => Cons(h, acc))
+  }
+
+  /*
+  TODO: Write This
+  Exercise 3:13
+  Hard: Can you write foldLeft in terms of foldRight? How about the other way around?
+  Implementing foldRight via foldLeft is useful because it lets us implement foldRight tail-recursively,
+  which means it works even for large lists without overflowing the stack.
+   */
+
+  /*
+  TODO:Write This
+  Exercise 3:14
+  Implement append in terms of either foldLeft or foldRight.
+   */
+
+  /*
+  Exercise 3:15
+  Hard: Write a function that concatenates a list of lists into a single list. Its runtime
+  should be linear in the total length of all lists. Try to use functions we have already defined.
+   */
 
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 
@@ -214,11 +249,18 @@ object TestList {
     assert(lengthLeft(List(1, 2, 3, 4, 66)) == 5)
 
     //Illustrating the differences between foldRight and foldLeft
+    /*
     val lst = List(1, 2, 3, 4)
     println("foldRightDemo ----------------------- " + lst)
     foldRightDemo(lst)
     println("foldLeftDemo ----------------------- " + lst)
     foldLeftDemo(lst)
+    */
+
+    //Test reverse
+    assert(reverse(List(2, 4, 6, 10)) == List(10, 6, 4, 2))
+
+
 
 
   }
