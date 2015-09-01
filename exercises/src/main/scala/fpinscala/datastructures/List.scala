@@ -192,10 +192,12 @@ object List {
    */
 
   /*
-  TODO:Write This
   Exercise 3:14
   Implement append in terms of either foldLeft or foldRight.
    */
+  def appendViaFoldRight[A](a1: List[A], a2: List[A]): List[A] = {
+    foldRight((a1), a2)((h, acc) => Cons(h, acc))
+  }
 
   /*
   Exercise 3:15
@@ -260,8 +262,7 @@ object TestList {
     //Test reverse
     assert(reverse(List(2, 4, 6, 10)) == List(10, 6, 4, 2))
 
-
-
-
+    //Test
+    assert(appendViaFoldRight(List(1,2,3), List(4,5,6)) == List(1,2,3,4,5,6))
   }
 }
