@@ -208,7 +208,33 @@ object List {
     foldRight((l), List[A]())((l1, l2) => appendViaFoldRight(l1, l2))
   }
 
+  /*
+  Exercise 3:16
+  Write a function that transforms a list of integers by adding 1 to each element.
+  (Reminder: this should be a pure function that returns a new List!)
+   */
+
+  /*
+  Exercise 3:17
+  Write a function that turns each value in a List[Double] into a String. You can use the expression
+  d.toString to convert some d: Double to a String.
+   */
+
+  /*
+  Exercise 3:18
+  Write a function map that generalizes modifying each element in a list while maintaining the structure
+  of the list. Here is its signature
+   */
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+
+  /*
+  Exercise 3:19
+  Write a function filter that removes elements from a list unless they satisfy a given predicate.
+  Use it to remove all odd numbers from a List[Int].
+
+  def filter[A](as: List[A])(f: A => Boolean): List[A]
+   */
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = sys.error("todo")
 
 }
 
