@@ -204,6 +204,9 @@ object List {
   Hard: Write a function that concatenates a list of lists into a single list. Its runtime
   should be linear in the total length of all lists. Try to use functions we have already defined.
    */
+  def flattenLists[A](l: List[List[A]]): List[A] = {
+    foldRight((l), List[A]())((l1, l2) => appendViaFoldRight(l1, l2))
+  }
 
   def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
 
@@ -263,6 +266,9 @@ object TestList {
     assert(reverse(List(2, 4, 6, 10)) == List(10, 6, 4, 2))
 
     //Test
-    assert(appendViaFoldRight(List(1,2,3), List(4,5,6)) == List(1,2,3,4,5,6))
+    assert(appendViaFoldRight(List(1, 2, 3), List(4, 5, 6)) == List(1, 2, 3, 4, 5, 6))
+
+    //Test Flatten Lists
+    assert(flattenLists(List(List(1, 2), List(3, 4), List(5))) == List(1, 2, 3, 4, 5))
   }
 }
