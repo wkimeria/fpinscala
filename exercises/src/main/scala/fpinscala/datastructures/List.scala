@@ -255,6 +255,35 @@ object List {
       case Nil => Nil
     }
   }
+
+  /*
+  Exercise 3:20
+  Write a function flatMap that works like map except that the function given will return a list instead of a
+  single result, and that list should be inserted into the final resulting list. Here is its signature:
+
+  def flatMap[A,B](as: List[A])(f: A => List[B]): List[B]
+
+  For instance, flatMap(List(1,2,3))(i => List(i,i)) should result in List(1,1,2,2,3,3).
+   */
+  /*
+  def map[A, B](l: List[A])(f: A => B): List[B] = {
+    foldRight(l, Nil: List[B])((h, t) => Cons(f(h), t))
+  }
+   */
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
+    foldRight[A, List[B]](as, Nil: List[B])((h, t) => append(f(h), t))
+  }
+
+  /*
+  Exercise 3:21
+  Use flatMap to implement filter.
+   */
+  def filterUsingFlatMap[A](as: List[A])(f: A => Boolean): List[A] = {
+    flatMap[A, A](as)((a) => {
+      if (f(a)) List(a)
+      else Nil
+    })
+  }
 }
 
 object TestList {
@@ -330,6 +359,11 @@ object TestList {
 
     //Test Filter
     assert(filter(List(1, 2, 3, 4, 5, 6))((x) => x % 2 == 0) == List(2, 4, 6))
+
+    //Test FlatMap
+    assert(flatMap(List(1, 2, 3))((a) => List(a, a)) == List(1, 1, 2, 2, 3, 3))
+
+    assert(filterUsingFlatMap(List(1, 2, 3, 4, 5, 6))((x) => x % 2 == 0) == List(2, 4, 6))
 
   }
 }
