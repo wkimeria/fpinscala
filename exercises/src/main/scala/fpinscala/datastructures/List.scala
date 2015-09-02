@@ -231,7 +231,13 @@ object List {
   Write a function map that generalizes modifying each element in a list while maintaining the structure
   of the list. Here is its signature
    */
-  def map[A, B](l: List[A])(f: A => B): List[B] = sys.error("todo")
+  def map[A, B](l: List[A])(f: A => B): List[B] = {
+    foldRight(l, Nil: List[B])((h, t) => Cons(f(h), t))
+  }
+
+  def addOneUsingMap(l: List[Int]): List[Int] = map(l)((x) => x + 1)
+
+  def doubleListToStringUsingMap(l: List[Double]): List[String] = map(l)((x) => x.toString)
 
   /*
   Exercise 3:19
@@ -309,6 +315,11 @@ object TestList {
     //Test doubleListToString
     assert(doubleListToString(List(1, 2, 3, 4)) == List("1.0", "2.0", "3.0", "4.0"))
 
+    //Test addOneUsingMap
+    assert(addOneUsingMap(List(1, 2, 3, 4)) == List(2, 3, 4, 5))
+
+    //Test doubleListToStringUsingMap
+    assert(doubleListToStringUsingMap(List(1, 2, 3, 4)) == List("1.0", "2.0", "3.0", "4.0"))
 
   }
 }
