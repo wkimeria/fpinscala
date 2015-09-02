@@ -222,6 +222,9 @@ object List {
   Write a function that turns each value in a List[Double] into a String. You can use the expression
   d.toString to convert some d: Double to a String.
    */
+  def doubleListToString(l: List[Double]): List[String] = {
+    foldRight(l, Nil: List[String])((h, t) => Cons(h.toString, t))
+  }
 
   /*
   Exercise 3:18
@@ -302,6 +305,9 @@ object TestList {
 
     //Test addOne
     assert(addOne(List(1, 2, 3, 4)) == List(2, 3, 4, 5))
+
+    //Test doubleListToString
+    assert(doubleListToString(List(1, 2, 3, 4)) == List("1.0", "2.0", "3.0", "4.0"))
 
 
   }
