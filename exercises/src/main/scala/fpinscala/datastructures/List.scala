@@ -246,8 +246,15 @@ object List {
 
   def filter[A](as: List[A])(f: A => Boolean): List[A]
    */
-  def filter[A](as: List[A])(f: A => Boolean): List[A] = sys.error("todo")
-
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    as match {
+      case Cons(h, t) => {
+        if (f(h)) Cons(h, filter(t)(f))
+        else filter(t)(f)
+      }
+      case Nil => Nil
+    }
+  }
 }
 
 object TestList {
@@ -320,6 +327,9 @@ object TestList {
 
     //Test doubleListToStringUsingMap
     assert(doubleListToStringUsingMap(List(1, 2, 3, 4)) == List("1.0", "2.0", "3.0", "4.0"))
+
+    //Test Filter
+    assert(filter(List(1, 2, 3, 4, 5, 6))((x) => x % 2 == 0) == List(2, 4, 6))
 
   }
 }
