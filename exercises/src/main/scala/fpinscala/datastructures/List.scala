@@ -213,6 +213,9 @@ object List {
   Write a function that transforms a list of integers by adding 1 to each element.
   (Reminder: this should be a pure function that returns a new List!)
    */
+  def addOne(l: List[Int]): List[Int] = {
+    foldRight(l, Nil: List[Int])((h, t) => Cons(h + 1, t))
+  }
 
   /*
   Exercise 3:17
@@ -296,5 +299,10 @@ object TestList {
 
     //Test Flatten Lists
     assert(flattenLists(List(List(1, 2), List(3, 4), List(5))) == List(1, 2, 3, 4, 5))
+
+    //Test addOne
+    assert(addOne(List(1, 2, 3, 4)) == List(2, 3, 4, 5))
+
+
   }
 }
