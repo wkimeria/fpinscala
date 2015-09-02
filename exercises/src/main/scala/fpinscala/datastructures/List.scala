@@ -265,11 +265,6 @@ object List {
 
   For instance, flatMap(List(1,2,3))(i => List(i,i)) should result in List(1,1,2,2,3,3).
    */
-  /*
-  def map[A, B](l: List[A])(f: A => B): List[B] = {
-    foldRight(l, Nil: List[B])((h, t) => Cons(f(h), t))
-  }
-   */
   def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
     foldRight[A, List[B]](as, Nil: List[B])((h, t) => append(f(h), t))
   }
@@ -284,6 +279,33 @@ object List {
       else Nil
     })
   }
+
+  /*
+  Exercise 3:22
+  Write a function that accepts two lists and constructs a new list by adding corresponding elements.
+  For example, List(1,2,3) and List(4,5,6) become List(5,7,9).
+   */
+  def append2Lists(l1: List[Int], l2: List[Int]): List[Int] = {
+    l1 match {
+      case Cons(h1: Int, t1) =>
+        l2 match {
+          case Cons(h2: Int, t2) => {
+            Cons((h1 + h2), append2Lists(t1, t2))
+          }
+          case Nil => Nil
+        }
+      case Nil => Nil
+    }
+  }
+
+  /*
+  TODO: Write This
+  Exercise 3:23
+  Generalize the function you just wrote so that it’s not specific to integers or addition.
+  Name your generalized function zipWith.
+   */
+
+
 }
 
 object TestList {
@@ -363,7 +385,11 @@ object TestList {
     //Test FlatMap
     assert(flatMap(List(1, 2, 3))((a) => List(a, a)) == List(1, 1, 2, 2, 3, 3))
 
+    //Test filterUsingFlatMap
     assert(filterUsingFlatMap(List(1, 2, 3, 4, 5, 6))((x) => x % 2 == 0) == List(2, 4, 6))
+
+    //Test append2Lists
+    assert(append2Lists(List(1, 2, 3, 4), List(10, 20, 30, 40)) == List(11, 22, 33, 44))
 
   }
 }
