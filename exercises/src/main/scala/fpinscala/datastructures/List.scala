@@ -315,6 +315,34 @@ object List {
       case Nil => Nil
     }
   }
+
+  /*
+  Exercise 3:24
+  Hard: As an example, implement hasSubsequence for checking whether a List contains another List as a subsequence.
+  For instance, List(1,2,3,4) would have List(1,2), List(2,3), and List(4) as subsequences, among others.
+  You may have some difficulty finding a concise purely functional implementation that is also efficient.
+  That’s okay. Implement the function however comes most naturally.
+  We’ll return to this implementation in chapter 5 and hopefully improve on it.
+  Note: Any two values x and y can be compared for equality in Scala using the expression x == y.
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean
+   */
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    def loop(a: List[A], b: List[A], prevMatch: Boolean): Boolean = {
+      (a, b) match {
+        case ((Cons(h1, t1), Cons(h2, t2))) => {
+          if (h1 == h2) loop(t1, t2, true)
+          else loop(t1, b, false)
+        }
+        case (Cons(_, _), Nil) => true
+        case (_, _) => false
+      }
+    }
+    (sup, sub) match {
+      case (Cons(h1, Nil), Cons(h2, Nil)) => (h1 == h2)
+      case (_, _) => loop(sup, sub, false)
+    }
+  }
 }
 
 object TestList {
@@ -402,6 +430,16 @@ object TestList {
 
     //Test zipWith
     assert(zipWith[Int](List(1, 2, 3, 4), List(10, 20, 30, 40))((x, y) => x + y) == List(11, 22, 33, 44))
+
+    //Test hasSubsequence
+    assert(hasSubsequence(List(1, 2, 3, 4), List(1, 2, 3)) == true)
+    assert(hasSubsequence(List(1, 2, 3, 4), List(2, 3)) == true)
+    assert(hasSubsequence(List(1, 2, 3, 4), List(5, 6, 7)) == false)
+    assert(hasSubsequence(List(1, 2, 3, 4), List(1, 2, 4)) == false)
+    assert(hasSubsequence(List(1, 1, 3, 4), List(1, 1, 3)) == true)
+    assert(hasSubsequence(List(1, 1, 3, 3), List(1, 1, 4)) == false)
+    assert(hasSubsequence(List(1, 2), List(1)) == true)
+    assert(hasSubsequence(List(1), List(1)) == true)
 
   }
 }
