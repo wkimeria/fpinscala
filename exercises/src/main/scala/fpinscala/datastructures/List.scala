@@ -299,13 +299,22 @@ object List {
   }
 
   /*
-  TODO: Write This
   Exercise 3:23
   Generalize the function you just wrote so that it’s not specific to integers or addition.
   Name your generalized function zipWith.
    */
-
-
+  def zipWith[A](l1: List[A], l2: List[A])(f: (A, A) => A): List[A] = {
+    l1 match {
+      case Cons(h1, t1) =>
+        l2 match {
+          case Cons(h2, t2) => {
+            Cons(f(h1, h2), zipWith(t1, t2)(f))
+          }
+          case Nil => Nil
+        }
+      case Nil => Nil
+    }
+  }
 }
 
 object TestList {
@@ -390,6 +399,9 @@ object TestList {
 
     //Test append2Lists
     assert(append2Lists(List(1, 2, 3, 4), List(10, 20, 30, 40)) == List(11, 22, 33, 44))
+
+    //Test zipWith
+    assert(zipWith[Int](List(1, 2, 3, 4), List(10, 20, 30, 40))((x, y) => x + y) == List(11, 22, 33, 44))
 
   }
 }
