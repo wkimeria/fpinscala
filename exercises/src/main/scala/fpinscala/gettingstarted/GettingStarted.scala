@@ -153,7 +153,20 @@ object PolymorphicFunctions {
 
   // Exercise 2: Implement a polymorphic function to check whether
   // an `Array[A]` is sorted
-  def isSorted[A](as: Array[A], gt: (A, A) => Boolean): Boolean = {
+  def isSorted[A](as: Array[A],gt: (A, A) => Boolean): Boolean = {
+    @annotation.tailrec
+    def loop(idx: Int, prevSorted: Boolean): Boolean = {
+      if (prevSorted == false) prevSorted
+      else {
+        if (idx > as.length - 2) prevSorted
+        else loop(idx + 1, gt(as(idx), as(idx + 1)))
+      }
+    }
+    loop(0, true)
+  }
+
+  //Having the arguments curried allows type inference when calling
+  def isSortedCurried[A](as: Array[A])(gt: (A, A) => Boolean): Boolean = {
     @annotation.tailrec
     def loop(idx: Int, prevSorted: Boolean): Boolean = {
       if (prevSorted == false) prevSorted
@@ -166,6 +179,8 @@ object PolymorphicFunctions {
   }
 
   def main(args: Array[String]): Unit = {
+    assert(isSortedCurried(Array(1, 2, 3))((a,b) => a < b) == true)
+
     assert(isSorted(Array(1),(a: Int,b: Int) => a < b) == true)
     assert(isSorted(Array(1, 2),(a: Int,b: Int) => a < b) == true)
     assert(isSorted(Array(1, 2),(a: Int,b: Int) => a > b) == false)
