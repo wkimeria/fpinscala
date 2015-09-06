@@ -40,6 +40,13 @@ object Tree {
   Exercise 3:27
   Write a function depth that returns the maximum path length from the root of a tree to any leaf.
    */
+  def depth[A](tree: Tree[A]): Int = {
+    def loop[A](t: Tree[A], d: Int): Int = t match {
+      case Leaf(x) => d
+      case Branch(l, r) => loop(l, d + 1).max(loop(r, d + 1))
+    }
+    loop(tree, 0)
+  }
 
   /*
   Exercise 3:28
@@ -69,5 +76,24 @@ object TestTree {
     assert(max(Branch(Leaf(1), Leaf(2))) == 2)
     assert(max(Branch(Leaf(9), Branch(Leaf(1), Leaf(2)))) == 9)
     assert(max(Branch(Leaf(11), Branch(Leaf(1), Leaf(2)))) == 11)
+
+    //Test depth
+    val la4 = Leaf(1)
+    val ra4 = Leaf(2)
+    val la = Branch(la4, ra4)
+
+    val lb4 = Leaf(3)
+    val lb = Branch(lb4, la)
+
+    val lc4 = Leaf(5)
+    val lc = Branch(lc4, lb)
+
+    val ld4 = Leaf(5)
+    val ld = Branch(ld4, lc)
+
+    assert(depth(Branch(Leaf(1), Leaf(2))) == 1)
+    assert(depth(Branch(Leaf(9), Branch(Leaf(1), Leaf(2)))) == 2)
+    assert(depth(ld) == 4)
+
   }
 }
