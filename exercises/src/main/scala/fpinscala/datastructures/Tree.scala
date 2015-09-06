@@ -53,6 +53,10 @@ object Tree {
   Write a function map, analogous to the method of the same name on List, that modifies each element in
   a tree with a given function.
    */
+  def map[A](t: Tree[A])(f: A => A): Tree[A] = t match {
+    case Leaf(x) => Leaf(f(x))
+    case Branch(l, r) => Branch(map(l)(f), map(r)(f))
+  }
 
   /*
   Exercise 3:29
@@ -78,22 +82,14 @@ object TestTree {
     assert(max(Branch(Leaf(11), Branch(Leaf(1), Leaf(2)))) == 11)
 
     //Test depth
-    val la4 = Leaf(1)
-    val ra4 = Leaf(2)
-    val la = Branch(la4, ra4)
-
-    val lb4 = Leaf(3)
-    val lb = Branch(lb4, la)
-
-    val lc4 = Leaf(5)
-    val lc = Branch(lc4, lb)
-
-    val ld4 = Leaf(5)
-    val ld = Branch(ld4, lc)
-
     assert(depth(Branch(Leaf(1), Leaf(2))) == 1)
     assert(depth(Branch(Leaf(9), Branch(Leaf(1), Leaf(2)))) == 2)
-    assert(depth(ld) == 4)
+    assert(depth(Branch(Leaf(13), Branch(Leaf(5), Branch(Leaf(3), Branch(Leaf(1), Leaf(2)))))) == 4)
+
+    //Test map
+    assert(map(Branch(Leaf(1.0), Leaf(2.0)))(x => x * 2) == Branch(Leaf(2.0), Leaf(4.0)))
+    assert(map(Branch(Leaf(13), Branch(Leaf(5), Branch(Leaf(3), Branch(Leaf(1), Leaf(2))))))(x => x * 2)
+      == Branch(Leaf(26), Branch(Leaf(10), Branch(Leaf(6), Branch(Leaf(2), Leaf(4))))))
 
   }
 }
