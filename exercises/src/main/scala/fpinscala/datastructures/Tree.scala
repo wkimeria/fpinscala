@@ -61,9 +61,29 @@ object Tree {
   /*
   Exercise 3:29
   Generalize size, maximum, depth, and map, writing a new function fold that abstracts over their similarities.
-  Reimplement them in terms of this more general function.
+  Re-implement them in terms of this more general function.
   Can you draw an analogy between this fold function and the left and right folds for List?
    */
+  def fold[A, B](t: Tree[A])(f: A => B)(g: (B, B) => B): B = t match {
+    case Leaf(a) => f(a)
+    case Branch(l, r) => g(fold(l)(f)(g), fold(r)(f)(g))
+  }
+
+  def mapViaFold[A](t: Tree[A])(f: A => A): Tree[A] = {
+    fold(t)((x) => Leaf(f(x)): Tree[A])(Branch(_, _))
+  }
+
+  def sizeViaFold[A](t: Tree[A]): Int = {
+    fold(t)(x => 1)(1 + _ + _)
+  }
+
+  def maxViaFold(t: Tree[Int]): Int = {
+    fold(t)(x => x: Int)(_.max(_))
+  }
+
+  def depthViaFold[A](t: Tree[A]): Int = {
+    fold(t)(x => 0)((a, b) => b + 1)
+  }
 }
 
 object TestTree {
@@ -90,6 +110,14 @@ object TestTree {
     assert(map(Branch(Leaf(1.0), Leaf(2.0)))(x => x * 2) == Branch(Leaf(2.0), Leaf(4.0)))
     assert(map(Branch(Leaf(13), Branch(Leaf(5), Branch(Leaf(3), Branch(Leaf(1), Leaf(2))))))(x => x * 2)
       == Branch(Leaf(26), Branch(Leaf(10), Branch(Leaf(6), Branch(Leaf(2), Leaf(4))))))
+
+    //Test fold
+    assert(mapViaFold(Branch(Leaf(9), Branch(Leaf(1), Leaf(2))))(x => x * 2) == Branch(Leaf(18), Branch(Leaf(2), Leaf(4))))
+    assert(sizeViaFold(Branch(Leaf(19), Branch(Leaf(10), Leaf(20)))) == 5)
+    assert(maxViaFold(Branch(Leaf(11), Branch(Leaf(17), Leaf(2)))) == 17)
+    assert(depthViaFold(Branch(Leaf(1), Leaf(2))) == 1)
+    assert(depthViaFold(Branch(Leaf(9), Branch(Leaf(1), Leaf(2)))) == 2)
+    assert(depthViaFold(Branch(Leaf(13), Branch(Leaf(5), Branch(Leaf(3), Branch(Leaf(1), Leaf(2)))))) == 4)
 
   }
 }
