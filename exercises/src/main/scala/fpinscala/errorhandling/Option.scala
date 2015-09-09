@@ -34,11 +34,18 @@ sealed trait Option[+A] {
     case None => default
   }
 
-  def flatMap[B](f: A => Option[B]): Option[B] = sys.error("todo")
+  def flatMap[B](f: A => Option[B]): Option[B] = this match{
+    case Some(a) => f(a)
+    case None => None
+  }
 
-  def orElse[B >: A](ob: => Option[B]): Option[B] = sys.error("todo")
+  def orElse[B >: A](ob: => Option[B]): Option[B] = {
+    this map (Some(_)) getOrElse ob
+  }
 
-  def filter(f: A => Boolean): Option[A] = sys.error("todo")
+  def filter(f: A => Boolean): Option[A] = {
+    flatMap(a => if (f(a)) Some(a) else None)
+  }
 }
 
 case class Some[+A](get: A) extends Option[A]
@@ -93,6 +100,10 @@ object TestOption {
     //test getOrElse
     assert(Some(3).getOrElse(-1) == 3)
     assert(None.getOrElse(-1) == -1)
+
+    //test flatMap
+    assert(Some[Int](3).flatMap((a) => Some(a)) == Some(3))
+    assert(None.flatMap((a) => Some(a)) == None)
 
   }
 }
