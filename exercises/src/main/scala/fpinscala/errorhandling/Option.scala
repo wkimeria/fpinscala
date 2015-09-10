@@ -2,6 +2,7 @@ package fpinscala.errorhandling
 
 
 import scala.{Option => _, Some => _, Either => _, _}
+import Math._
 
 // hide std library `Option`, `Some` and `Either`, since we are writing our own in this chapter
 
@@ -34,7 +35,7 @@ sealed trait Option[+A] {
     case None => default
   }
 
-  def flatMap[B](f: A => Option[B]): Option[B] = this match{
+  def flatMap[B](f: A => Option[B]): Option[B] = this match {
     case Some(a) => f(a)
     case None => None
   }
@@ -78,7 +79,20 @@ object Option {
     if (xs.isEmpty) None
     else Some(xs.sum / xs.length)
 
-  def variance(xs: Seq[Double]): Option[Double] = sys.error("todo")
+  /*
+  Exercise 4:2
+  Implement the variance function in terms of flatMap. If the mean of a sequence is m,
+  the variance is the mean of math.pow(x - m, 2) for each element x in the sequence.
+  See the definition of variance on Wikipedia (http://mng.bz/0Qsr).
+
+  def variance(xs: Seq[Double]): Option[Double]
+   */
+
+  def variance(xs: Seq[Double]): Option[Double] =
+    mean(xs).flatMap((m) => {
+      mean(xs.map(x => Math.pow(x - m, 2)))
+    })
+
 
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = sys.error("todo")
 
@@ -104,6 +118,13 @@ object TestOption {
     //test flatMap
     assert(Some[Int](3).flatMap((a) => Some(a)) == Some(3))
     assert(None.flatMap((a) => Some(a)) == None)
+
+    assert(variance(List(2.0, 2.0, 5.0, 7.0)) == Some(4.5))
+    println(variance(List(2.0, 2.0, 5.0, 7.0)))
+
+    //Mean = 9/3 = 3
+    //-1, -1, 2
+    //1 +1 + 4 = 5/3
 
   }
 }
