@@ -87,14 +87,20 @@ object Option {
 
   def variance(xs: Seq[Double]): Option[Double]
    */
-
   def variance(xs: Seq[Double]): Option[Double] =
     mean(xs).flatMap((m) => {
       mean(xs.map(x => Math.pow(x - m, 2)))
     })
 
+  /*
+  Exercise 4.3
+  Write a generic function map2 that combines two Option values using a binary function.
+  If either Option value is None, then the return value is too. Here is its signature:
 
-  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = sys.error("todo")
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C]
+   */
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
+    a flatMap (a1 => b map (b1 => f(a1, b1)))
 
   def sequence[A](a: List[Option[A]]): Option[List[A]] = sys.error("todo")
 
@@ -119,12 +125,14 @@ object TestOption {
     assert(Some[Int](3).flatMap((a) => Some(a)) == Some(3))
     assert(None.flatMap((a) => Some(a)) == None)
 
+    //test variance
     assert(variance(List(2.0, 2.0, 5.0, 7.0)) == Some(4.5))
-    println(variance(List(2.0, 2.0, 5.0, 7.0)))
 
-    //Mean = 9/3 = 3
-    //-1, -1, 2
-    //1 +1 + 4 = 5/3
+    //test map2
+    assert(map2(Some(1), Some(2))((a, b) => a + b) == Some(3))
+    assert(map2(None, Some(2))((a: Int, b: Int) => a + b) == None)
+    assert(map2(Some(1), None)((a: Int, b: Int) => a + b) == None)
+    assert(map2(None, None)((a: Int, b: Int) => a + b) == None)
 
   }
 }
