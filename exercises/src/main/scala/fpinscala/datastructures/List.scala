@@ -124,6 +124,22 @@ object List {
   }
 
   /*
+  * Exercise 3.6
+  * Tail recursive function
+   */
+  def init2[A](l: List[A]): List[A] = {
+    @annotation.tailrec
+    def loop(b: List[A], acc: List[A]):List[A] = {
+      b match {
+        case Cons(h, Nil) => acc
+        case Cons(h, t) => loop(t, Cons(h,acc))
+        case _ => Nil
+      }
+    }
+    reverse(loop(l, List[A]()))
+  }
+
+  /*
   Exercise 3.9
   Compute the length of a list using foldRight.
    */
@@ -369,6 +385,10 @@ object TestList {
     //Test init
     assert(init(List(1)) == Nil)
     assert(init(List(1, 2, 3, 4, 5)) == List(1, 2, 3, 4))
+
+    //Test init2
+    assert(init2(List(1)) == Nil)
+    assert(init2(List(1, 2, 3, 4, 5)) == List(1, 2, 3, 4))
 
     //Test length using foldRight
     assert(length(Nil) == 0)
