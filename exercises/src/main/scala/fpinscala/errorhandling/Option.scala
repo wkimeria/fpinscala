@@ -102,9 +102,42 @@ object Option {
   def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] =
     a flatMap (a1 => b map (b1 => f(a1, b1)))
 
-  def sequence[A](a: List[Option[A]]): Option[List[A]] = sys.error("todo")
+  /*
+  //TODO: Don't fully understand what is happening here
+  Exercise 4.4
+  Write a function sequence that combines a list of Options into one Option containing a list of all
+  the Some values in the original list.
+  If the original list contains None even once, the result of the function should be None;
+  otherwise the result should be Some with a list of all the values.
+   */
 
-  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = sys.error("todo")
+  def sequence[A](a: List[Option[A]]): Option[List[A]] = {
+    a match {
+      case Nil => Some(Nil)
+      case h :: t => h flatMap (hh => sequence(t) map (hh :: _))
+    }
+  }
+
+  /*
+  TODO: Revisit this
+  Exercise 4.5
+  Implement this function. It’s straightforward to do using map and sequence, but try for a more
+  efficient implementation that only looks at the list once.
+  In fact, implement sequence in terms of traverse.
+   */
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
+    a match {
+      case Nil => Some(Nil)
+      case h :: t => {
+        (traverse(t)(f)) match {
+          case Some(v: B) => Some(v.::(f(h) match {
+            case Some(x) => x
+          }))
+          case None => None
+        }
+      }
+    }
+  }
 }
 
 object TestOption {
@@ -133,6 +166,13 @@ object TestOption {
     assert(map2(None, Some(2))((a: Int, b: Int) => a + b) == None)
     assert(map2(Some(1), None)((a: Int, b: Int) => a + b) == None)
     assert(map2(None, None)((a: Int, b: Int) => a + b) == None)
+
+    //Test sequence
+    assert(sequence(List(Some(1), Some(2), None, Some(4))) == None)
+    assert(sequence(List(Some(1), Some(2), Some(3), Some(4))) == Some(List(1, 2, 3, 4)))
+
+    //Test traverse
+    assert(traverse[Int, String](List(1, 2, 3))((f) => Some(f.toString + "--")) == Some(List("1--", "2--", "3--")))
 
   }
 }

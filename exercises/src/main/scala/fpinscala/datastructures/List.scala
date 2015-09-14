@@ -125,7 +125,7 @@ object List {
 
   /*
   * Exercise 3.6
-  * Tail recursive function
+  * Tail recursive version
    */
   def init2[A](l: List[A]): List[A] = {
     @annotation.tailrec
