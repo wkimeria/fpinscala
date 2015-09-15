@@ -119,7 +119,6 @@ object Option {
   }
 
   /*
-  TODO: Revisit this
   Exercise 4.5
   Implement this function. It’s straightforward to do using map and sequence, but try for a more
   efficient implementation that only looks at the list once.
@@ -128,15 +127,17 @@ object Option {
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
     a match {
       case Nil => Some(Nil)
-      case h :: t => {
-        (traverse(t)(f)) match {
-          case Some(v: B) => Some(v.::(f(h) match {
-            case Some(x) => x
-          }))
-          case None => None
-        }
-      }
+      case h :: t => map2(f(h), traverse(t)(f))(_ :: _)
+
     }
+  }
+
+  /*
+  Exercise 4.5 contd.
+  Implement sequence in terms of traverse
+   */
+  def sequenceViaTraverse[A](a: List[Option[A]]): Option[List[A]] = {
+    traverse(a)((f) => f map (ff => ff))
   }
 }
 
@@ -173,6 +174,13 @@ object TestOption {
 
     //Test traverse
     assert(traverse[Int, String](List(1, 2, 3))((f) => Some(f.toString + "--")) == Some(List("1--", "2--", "3--")))
+    assert(traverse[Int, String](List(1, 2, 3))((f) => {
+      if (f == 2) None
+      else Some(f.toString + "--")
+    }) == None)
 
+    //Test sequence
+    assert(sequenceViaTraverse(List(Some(1), Some(2), None, Some(4))) == None)
+    assert(sequenceViaTraverse(List(Some(1), Some(2), Some(3), Some(4))) == Some(List(1, 2, 3, 4)))
   }
 }
