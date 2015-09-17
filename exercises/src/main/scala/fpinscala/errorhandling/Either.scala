@@ -41,9 +41,25 @@ case class Left[+E](get: E) extends Either[E, Nothing]
 case class Right[+A](get: A) extends Either[Nothing, A]
 
 object Either {
+
+  /*
+  Exercise 4.7
+  Implement sequence and traverse for Either. These should return the first error that’s encountered, if there is one.
+   */
   def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = sys.error("todo")
 
-  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = sys.error("todo")
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
+    es match {
+      case h2 :: Nil => h2 match {
+        case Right(v) => Right(List(v))
+        case Left(v2) => Left(v2)
+      }
+      case h :: t => for {
+        hh <- h
+        tt <- sequence(t)
+      } yield tt.::(hh)
+    }
+  }
 
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
     if (xs.isEmpty)
@@ -86,6 +102,9 @@ object TestEither {
 
     assert(Right(3).map2[Int, Int, Int](Right(6))(_ + _) == Right(9))
     assert(Right(3).map2[Int, Int, Int](Left(6))((a, b) => a + b) == Left(6))
-    
+
+    assert(sequence(List(Right(1), Right(2), Right(3))) == Right(List(1, 2, 3)))
+    assert(sequence(List(Right(1), Left(2), Right(3))) == Left(2))
+
   }
 }
