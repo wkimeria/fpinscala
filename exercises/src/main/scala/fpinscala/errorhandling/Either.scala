@@ -46,7 +46,9 @@ object Either {
   Exercise 4.7
   Implement sequence and traverse for Either. These should return the first error that’s encountered, if there is one.
    */
-  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = sys.error("todo")
+  def traverse[E, A, B](es: List[A])(f: A => Either[E, B]): Either[E, List[B]] = {
+    es.foldRight[Either[E, List[B]]](Right(Nil))((a, b) => f(a).map2(b)(_ :: _))
+  }
 
   def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
     es match {
@@ -59,6 +61,10 @@ object Either {
         tt <- sequence(t)
       } yield tt.::(hh)
     }
+  }
+
+  def sequenceUsingTraverse[E, A](es: List[Either[E, A]]): Either[E, List[A]] = {
+    traverse(es)(f => f)
   }
 
   def mean(xs: IndexedSeq[Double]): Either[String, Double] =
@@ -103,8 +109,16 @@ object TestEither {
     assert(Right(3).map2[Int, Int, Int](Right(6))(_ + _) == Right(9))
     assert(Right(3).map2[Int, Int, Int](Left(6))((a, b) => a + b) == Left(6))
 
+    //Test sequence
     assert(sequence(List(Right(1), Right(2), Right(3))) == Right(List(1, 2, 3)))
     assert(sequence(List(Right(1), Left(2), Right(3))) == Left(2))
+
+    //Test traverse
+    assert(traverse(List(Right(1), Right(2), Right(3)))(a => a) == Right(List(1, 2, 3)))
+
+    //Test sequence
+    assert(sequenceUsingTraverse(List(Right(1), Right(2), Right(3))) == Right(List(1, 2, 3)))
+    assert(sequenceUsingTraverse(List(Right(1), Left(2), Right(3))) == Left(2))
 
   }
 }
