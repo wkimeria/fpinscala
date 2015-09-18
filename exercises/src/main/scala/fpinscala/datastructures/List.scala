@@ -49,6 +49,21 @@ object List {
       case Cons(x, xs) => f(x, foldRight(xs, z)(f))
     }
 
+  def foldRightVerbose[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    println("as = " + as  + " z = " + z)
+    as match {
+      case Nil => {
+        println("matched Nil")
+        z
+      }
+      case Cons(x, xs) => {
+        println("matched Cons(x, xs) x = " + x + " xs = " + xs)
+        f(x, foldRightVerbose(xs, z)(f))
+      }
+    }
+  }
+
+
   def sum2(ns: List[Int]) =
     foldRight(ns, 0)((x, y) => x + y)
 
@@ -460,6 +475,8 @@ object TestList {
     assert(hasSubsequence(List(1, 1, 3, 3), List(1, 1, 4)) == false)
     assert(hasSubsequence(List(1, 2), List(1)) == true)
     assert(hasSubsequence(List(1), List(1)) == true)
+
+    foldRightVerbose(List(1,2,3), Nil:List[Int])(Cons(_,_))
 
   }
 }
