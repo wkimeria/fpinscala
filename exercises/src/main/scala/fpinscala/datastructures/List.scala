@@ -53,11 +53,11 @@ object List {
     println("as = " + as  + " z = " + z)
     as match {
       case Nil => {
-        println("matched Nil")
+        //println("matched Nil")
         z
       }
       case Cons(x, xs) => {
-        println("matched Cons(x, xs) x = " + x + " xs = " + xs)
+        //println("matched Cons(x, xs) x = " + x + " xs = " + xs)
         f(x, foldRightVerbose(xs, z)(f))
       }
     }
@@ -162,6 +162,10 @@ object List {
     foldRight(l, 0)((x, b) => b + 1)
   }
 
+  def lengthRightVerbose[A](l: List[A]): Int = {
+    foldRightVerbose(l, 0)((x, b) => b + 1)
+  }
+
   def foldRightDemo[A](l: List[A]): Int = {
     foldRight(l, 0)((x, b) => {
       println("x = " + x + " b = " + b);
@@ -184,6 +188,20 @@ object List {
     }
   }
 
+  def foldLeftVerbose[A, B](l: List[A], z: B)(f: (B, A) => B): B = {
+    println("l = " + l  + " z = " + z)
+    l match {
+      case Nil => {
+        //println("matched Nil")
+        z
+      }
+      case Cons(x, xs) => {
+        //println("matched Cons(x, xs) x = " + x + " xs = " + xs)
+        foldLeftVerbose(xs, f(z, x))(f)
+      }
+    }
+  }
+
   /*
   Exercise 3:11
   Write sum, product, and a function to compute the length of a list using foldLeft.
@@ -196,6 +214,10 @@ object List {
 
   def lengthLeft[A, B](l: List[A]): Int = {
     foldLeft(l, 0)((b, x) => b + 1)
+  }
+
+  def lengthLeftVerbose[A, B](l: List[A]): Int = {
+    foldLeftVerbose(l, 0)((b, x) => b + 1)
   }
 
   def foldLeftDemo[A, B](l: List[A]): Int = {
@@ -476,7 +498,10 @@ object TestList {
     assert(hasSubsequence(List(1, 2), List(1)) == true)
     assert(hasSubsequence(List(1), List(1)) == true)
 
-    foldRightVerbose(List(1,2,3), Nil:List[Int])(Cons(_,_))
+    println("----------------- right --------------------------")
+    lengthRightVerbose(List(1, 2, 3, 4))
+    println("----------------- left --------------------------")
+    lengthLeftVerbose(List(1, 2, 3, 4))
 
   }
 }
