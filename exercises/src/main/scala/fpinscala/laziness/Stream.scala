@@ -27,10 +27,21 @@ trait Stream[+A] {
    */
   def toList: List[A] = foldRight(List[A]())((a, b) => b.::(a))
 
+  /*
+  Exercise 5.2
+  Write the function take(n) for returning the first n elements of a Stream, and drop(n)
+  for skipping the first n elements of a Stream.
+   */
+  def take(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 1 => cons(h(), t().take(n - 1))
+    case Cons(h, t) => cons(h(), empty)
+    case _ => empty
+  }
 
-  def take(n: Int): Stream[A] = sys.error("todo")
-
-  def drop(n: Int): Stream[A] = sys.error("todo")
+  def drop(n: Int): Stream[A] = this match{
+    case Cons(h, t) if n > 1 => t().drop(n - 1)
+    case _ => empty
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
 
@@ -76,6 +87,10 @@ object TestStream {
 
     //test toList
     assert((Stream(1, 2, 3, 4, 5).toList) == List(1, 2, 3, 4, 5))
+
+    assert(Stream(1, 2, 3, 4, 5).take(3).toList == List(1, 2, 3))
+
+    //assert(Stream(1, 2, 3, 4, 5).drop(2).toList == List(3,4,5))
 
   }
 }
