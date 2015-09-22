@@ -62,6 +62,17 @@ trait Stream[+A] {
     case _ => true
   }
 
+  /*
+  Exercise 5.5
+  Use foldRight to implement takeWhile.
+   */
+  def takeWhileUsingRightFold(p: A => Boolean): Stream[A] = {
+    this.foldRight(Stream[A]())((a, b) => p(a) match {
+      case true => cons(a, b)
+      case false => empty
+    })
+  }
+
   def headOption: Option[A] = sys.error("todo")
 
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
@@ -114,5 +125,8 @@ object TestStream {
 
     //test forAll
     assert(Stream(2, 4, 9, 7, 10).forAll((f) => f % 2 == 0) == false)
+
+    //test takeWhileUsingRightFold
+    assert(Stream(2, 4, 6, 7, 10).takeWhileUsingRightFold((f) => f % 2 == 0).toList == List(2, 4, 6))
   }
 }
