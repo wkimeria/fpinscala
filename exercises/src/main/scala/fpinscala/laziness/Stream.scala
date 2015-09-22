@@ -52,7 +52,15 @@ trait Stream[+A] {
     case _ => empty
   }
 
-  def forAll(p: A => Boolean): Boolean = sys.error("todo")
+  /*
+  Exercise 5.4
+  Implement forAll, which checks that all elements in the Stream match a given predicate.
+  Your implementation should terminate the traversal as soon as it encounters a nonmatching value.
+   */
+  def forAll(p: A => Boolean): Boolean = this match {
+    case Cons(h, t) => p(h()) && t().forAll(p)
+    case _ => true
+  }
 
   def headOption: Option[A] = sys.error("todo")
 
@@ -103,5 +111,8 @@ object TestStream {
 
     //test takeWhile
     assert(Stream(2, 4, 6, 7, 10).takeWhile((f) => f % 2 == 0).toList == List(2, 4, 6))
+
+    //test forAll
+    assert(Stream(2, 4, 9, 7, 10).forAll((f) => f % 2 == 0) == false)
   }
 }
