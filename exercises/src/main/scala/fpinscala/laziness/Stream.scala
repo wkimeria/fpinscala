@@ -38,12 +38,19 @@ trait Stream[+A] {
     case _ => empty
   }
 
-  def drop(n: Int): Stream[A] = this match{
-    case Cons(h, t) if n > 1 => t().drop(n - 1)
-    case _ => empty
+  def drop(n: Int): Stream[A] = this match {
+    case Cons(h, t) if n > 0 => t().drop(n - 1)
+    case _ => this
   }
 
-  def takeWhile(p: A => Boolean): Stream[A] = sys.error("todo")
+  /*
+  Exercise 5.3
+  Write the function takeWhile for returning all starting elements of a Stream that match the given predicate.
+   */
+  def takeWhile(p: A => Boolean): Stream[A] = this match {
+    case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
+    case _ => empty
+  }
 
   def forAll(p: A => Boolean): Boolean = sys.error("todo")
 
@@ -88,9 +95,13 @@ object TestStream {
     //test toList
     assert((Stream(1, 2, 3, 4, 5).toList) == List(1, 2, 3, 4, 5))
 
+    //test take
     assert(Stream(1, 2, 3, 4, 5).take(3).toList == List(1, 2, 3))
 
-    //assert(Stream(1, 2, 3, 4, 5).drop(2).toList == List(3,4,5))
+    //test drop
+    assert(Stream(1, 2, 3, 4, 5).drop(2).toList == List(3, 4, 5))
 
+    //test takeWhile
+    assert(Stream(2, 4, 6, 7, 10).takeWhile((f) => f % 2 == 0).toList == List(2, 4, 6))
   }
 }
