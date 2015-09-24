@@ -73,10 +73,43 @@ trait Stream[+A] {
     })
   }
 
-  def headOption: Option[A] = sys.error("todo")
+  /*
+   Exercise 5.6
+   Hard: Implement headOption using foldRight.
+   */
 
-  // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
-  // writing your own function signatures.
+  def headOption: Option[A] =
+    this.foldRight(None: Option[A])((a, b) => Some(a))
+
+
+  /*
+  Exercise 5.7
+  Implement map, filter, append, and flatMap using foldRight. The append method should be non-strict in its argument.
+   Part of the exercise is writing your own function signatures.
+   */
+  //foldRight(empty[B])((h,t) => cons(f(h), t))
+  def map[B](f: A => B): Stream[B] = {
+    this.foldRight(empty[B])((h, t) => {
+      cons(f(h), t)
+    })
+  }
+
+  def filter(f: A => Boolean): Stream[A] = {
+    this.foldRight(empty[A])((h, t) => {
+      f(h) match {
+        case true => cons(h, t)
+        case _ => t
+      }
+    })
+  }
+
+  def append[A](l1: Stream[A], l2: Stream[A]): Stream[A] = {
+    this.foldRight(l1)((h, t) => {
+     h match {
+       case Cons(hh, tt) => cons(hh,l2)
+     }
+    })
+  }
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
 }
@@ -128,5 +161,15 @@ object TestStream {
 
     //test takeWhileUsingRightFold
     assert(Stream(2, 4, 6, 7, 10).takeWhileUsingRightFold((f) => f % 2 == 0).toList == List(2, 4, 6))
+
+    //test headOption
+    assert(Stream(2, 4, 6, 7, 10).headOption == Some(2))
+
+    //test map
+    assert(Stream(1, 2, 3).map(f => f * f).toList == List(1, 4, 9))
+
+    //test filter
+    assert(Stream(1, 2, 3, 4, 5, 6, 7).filter(f => f % 2 == 0).toList == List(2, 4, 6))
+
   }
 }
