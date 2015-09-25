@@ -139,10 +139,23 @@ object Stream {
   Exercise 5.8
   Generalize ones slightly to the function constant, which returns an infinite Stream of a given value.
    */
-  def constant[A](a: A): Stream[A] = Stream.cons(a, constant(a))
+  def constant[A](a: A): Stream[A] = cons(a, constant(a))
 
-  def from(n: Int): Stream[Int] = sys.error("todo")
+  /*
+  Exercise 5.9
+  Write a function that generates an infinite stream of integers, starting from n, then n + 1, n + 2, and so on.[7]
+   */
+  def from(n: Int): Stream[Int] = cons(n, from(n + 1))
 
+  /*
+  Exercise 5.10
+  Write a function fibs that generates the infinite stream of Fibonacci numbers: 0, 1, 1, 2, 3, 5, 8, and so on.
+   */
+  def fib: Stream[Int] = {
+    def loop(a: Int, b: Int): Stream[Int] = cons(a, loop(b, a + b))
+    loop(0, 1)
+  }
+  
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
 }
 
@@ -187,6 +200,12 @@ object TestStream {
 
     //test constant
     assert(constant(99).take(3).toList == List(99, 99, 99))
+
+    //test from
+    assert(from(1).take(3).toList == List(1, 2, 3))
+    assert(from(10).take(3).toList == List(10, 11, 12))
+
+    assert(fib.take(8).toList == List(0, 1, 1, 2, 3, 5, 8, 13))
 
   }
 }
