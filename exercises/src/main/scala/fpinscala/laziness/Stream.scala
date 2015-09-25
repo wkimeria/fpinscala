@@ -134,6 +134,13 @@ object Stream {
 
   val ones: Stream[Int] = Stream.cons(1, ones)
 
+
+  /*
+  Exercise 5.8
+  Generalize ones slightly to the function constant, which returns an infinite Stream of a given value.
+   */
+  def constant[A](a: A): Stream[A] = Stream.cons(a, constant(a))
+
   def from(n: Int): Stream[Int] = sys.error("todo")
 
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
@@ -177,6 +184,9 @@ object TestStream {
 
     //test flatMap
     assert(Stream(1, 2, 3).flatMap(f => Stream(0, f)).toList == List(0, 1, 0, 2, 0, 3))
+
+    //test constant
+    assert(constant(99).take(3).toList == List(99, 99, 99))
 
   }
 }
