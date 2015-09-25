@@ -89,13 +89,13 @@ trait Stream[+A] {
    */
   //foldRight(empty[B])((h,t) => cons(f(h), t))
   def map[B](f: A => B): Stream[B] = {
-    this.foldRight(empty[B])((h, t) => {
+    foldRight(empty[B])((h, t) => {
       cons(f(h), t)
     })
   }
 
   def filter(f: A => Boolean): Stream[A] = {
-    this.foldRight(empty[A])((h, t) => {
+    foldRight(empty[A])((h, t) => {
       f(h) match {
         case true => cons(h, t)
         case _ => t
@@ -103,12 +103,13 @@ trait Stream[+A] {
     })
   }
 
-  def append[A](l1: Stream[A], l2: Stream[A]): Stream[A] = {
-    this.foldRight(l1)((h, t) => {
-     h match {
-       case Cons(hh, tt) => cons(hh,l2)
-     }
-    })
+  def append[B >: A](s: => Stream[B]): Stream[B] = {
+    foldRight(s)((h, t) => cons(h, t))
+  }
+
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] = {
+    foldRight(empty[B])((h, t) => f(h) append t)
   }
 
   def startsWith[B](s: Stream[B]): Boolean = sys.error("todo")
@@ -170,6 +171,12 @@ object TestStream {
 
     //test filter
     assert(Stream(1, 2, 3, 4, 5, 6, 7).filter(f => f % 2 == 0).toList == List(2, 4, 6))
+
+    //test append
+    assert(Stream(1, 2, 3).append(Stream(4, 5, 6)).toList == List(1, 2, 3, 4, 5, 6))
+
+    //test flatMap
+    assert(Stream(1, 2, 3).flatMap(f => Stream(0, f)).toList == List(0, 1, 0, 2, 0, 3))
 
   }
 }
