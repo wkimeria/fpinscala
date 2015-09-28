@@ -155,8 +155,30 @@ object Stream {
     def loop(a: Int, b: Int): Stream[Int] = cons(a, loop(b, a + b))
     loop(0, 1)
   }
-  
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = sys.error("todo")
+
+  /*
+  Exercise 5.11
+  Write a more general stream-building function called unfold. It takes an initial state, and a
+  function for producing both the next state and the next value in the generated stream.
+   */
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case Some((a: A, s: S)) => cons(a,unfold(s)(f))
+      case None => Stream[A]()
+    }
+  }
+
+  /*
+  Exercise 5:12
+  Write fibs, from, constant, and ones in terms of unfold.[8]
+   */
+  def fibUsingUnfold[A]: Stream[Int] = {
+    unfold((0,1)) { case (f0,f1) => Some((f0,(f1,f0+f1))) }
+  }
+
+  def fromUsingUnfold(n: Int): Stream[Int] = {
+    unfold(n)(x => Some(x,x+1))
+  }
 }
 
 object TestStream {
@@ -205,7 +227,14 @@ object TestStream {
     assert(from(1).take(3).toList == List(1, 2, 3))
     assert(from(10).take(3).toList == List(10, 11, 12))
 
+    //test assert
     assert(fib.take(8).toList == List(0, 1, 1, 2, 3, 5, 8, 13))
+
+    //test fibUsingUnfold
+    assert(fibUsingUnfold.take(8).toList == List(0, 1, 1, 2, 3, 5, 8, 13))
+
+    //test fromUsingUnfold
+    assert(fromUsingUnfold(5).take(5).toList == List(5, 6, 7, 8, 9))
 
   }
 }
