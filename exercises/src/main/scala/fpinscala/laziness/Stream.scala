@@ -163,7 +163,7 @@ object Stream {
    */
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
     f(z) match {
-      case Some((a: A, s: S)) => cons(a,unfold(s)(f))
+      case Some((a: A, s: S)) => cons(a, unfold(s)(f))
       case None => Stream[A]()
     }
   }
@@ -173,11 +173,15 @@ object Stream {
   Write fibs, from, constant, and ones in terms of unfold.[8]
    */
   def fibUsingUnfold[A]: Stream[Int] = {
-    unfold((0,1)) { case (f0,f1) => Some((f0,(f1,f0+f1))) }
+    unfold((0, 1)) { case (f0, f1) => Some((f0, (f1, f0 + f1)))}
   }
 
   def fromUsingUnfold(n: Int): Stream[Int] = {
-    unfold(n)(x => Some(x,x+1))
+    unfold(n)(x => Some(x, x + 1))
+  }
+
+  def onesUsingUnfold(n: Int): Stream[Int] = {
+    unfold(1)(x => Some(x, x))
   }
 }
 
@@ -235,6 +239,9 @@ object TestStream {
 
     //test fromUsingUnfold
     assert(fromUsingUnfold(5).take(5).toList == List(5, 6, 7, 8, 9))
+
+    //test onesUsingUnfold
+    assert(onesUsingUnfold(5).take(5).toList == List(1, 1, 1, 1, 1))
 
   }
 }
